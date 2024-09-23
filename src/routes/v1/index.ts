@@ -1,9 +1,10 @@
 import { Router } from "express";
 import httpStatus from "http-status";
+import nodeRoutes from "./nodeRoutes";
 
 const router = Router();
 
-// router.use("/",);
+router.use("/node", nodeRoutes);
 
 // Checking api is live
 router.get("/info", (req, res) => {

@@ -1,11 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import "reflect-metadata";
 import { config } from "./config/server_config";
 import { ApiError } from "./utils/ApiError";
 import httpStatus from "http-status";
 import errorHandler from "./middlewares/errorHandler";
 import apiRoutes from "./routes/index";
+import AppDataSource from "./data-source";
 
 const app = express();
 dotenv.config();
@@ -18,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", apiRoutes);
 
 app.listen(config.PORT, () => {
+    AppDataSource;
     console.log(`Server running at ${config.PORT}`);
 });
 
