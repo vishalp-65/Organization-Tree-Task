@@ -10,3 +10,11 @@ export const createNode = catchAsync(async (req: Request, res: Response) => {
         data: { node },
     });
 });
+
+export const getAllNode = catchAsync(async (req: Request, res: Response) => {
+    const node = await NodeService.getAllNodes();
+    res.status(httpStatus.CREATED).json({
+        status: "success",
+        data: { node },
+    });
+});

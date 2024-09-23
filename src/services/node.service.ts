@@ -41,9 +41,9 @@ class NodeService {
             const savedNode = await nodeRepo.save(newNode);
 
             // Propagate color to children
-            // if (["LOCATION", "DEPARTMENT"].includes(newNode.type)) {
-            //     await this.propagateColor(savedNode);
-            // }
+            if (["LOCATION", "DEPARTMENT"].includes(newNode.type)) {
+                await this.propagateColor(savedNode);
+            }
 
             return savedNode;
         } catch (error) {
@@ -53,18 +53,31 @@ class NodeService {
     };
 
     // Propagate color to children
-    // private static propagateColor = async (parentNode: Node) => {
-    //     const nodeRepo = AppDataSource.getRepository(Node);
+    private static propagateColor = async (parentNode: Node) => {
+        const nodeRepo = AppDataSource.getTreeRepository(Node);
 
-    //     const descendants = await nodeRepo.findDescendants(parentNode);
+        const descendants = await nodeRepo.findDescendants(parentNode);
 
-    //     descendants.forEach(async (child) => {
-    //         if (!["LOCATION", "DEPARTMENT"].includes(child.type)) {
-    //             child.color = parentNode.color; // Apply parent's color to children
-    //             await nodeRepo.save(child);
-    //         }
-    //     });
-    // };
+        descendants.forEach(async (child) => {
+            if (!["LOCATION", "DEPARTMENT"].includes(child.type)) {
+                child.color = parentNode.color; // Apply parent's color to children
+                await nodeRepo.save(child);
+            }
+        });
+    };
+
+    // Get all nodes
+    public static getAllNodes = async () => {
+        const nodeRepo = AppDataSource.getTreeRepository(Node);
+
+        try {
+            const nodes = await nodeRepo.findTrees();
+
+            return nodes;
+        } catch (error) {
+            throw new ApiError("Error fetching nodes", 500);
+        }
+    };
 }
 
 export default NodeService;

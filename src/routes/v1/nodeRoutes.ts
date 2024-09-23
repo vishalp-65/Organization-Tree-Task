@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { createNode } from "../../controllers/node.controller";
+import { createNode, getAllNode } from "../../controllers/node.controller";
 
 const router = Router();
 
-// Checking api is live
+// Node routes
 router.post("/", createNode);
+router.get("/", getAllNode);
 
 export default router;
