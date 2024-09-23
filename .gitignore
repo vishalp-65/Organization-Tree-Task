@@ -6,3 +6,4 @@ tmp/
 temp/
 ca.pem
 .gitignore
+.env
