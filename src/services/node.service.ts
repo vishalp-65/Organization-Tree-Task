@@ -78,6 +78,52 @@ class NodeService {
             throw new ApiError("Error fetching nodes", 500);
         }
     };
+
+    // Delete Node with two options (Remove children or shift children)
+    public static deleteNode = async (
+        nodeId: number,
+        option: "remove-all" | "shift-children"
+    ) => {
+        const nodeRepo = AppDataSource.getTreeRepository(Node);
+
+        try {
+            const node = await nodeRepo.findOne({
+                where: { id: nodeId },
+                relations: ["children", "parent"],
+            });
+
+            if (!node) {
+                throw new ApiError("Node not found", 404);
+            }
+
+            if (option === "remove-all") {
+                // Now you can safely remove the node, and all children will be deleted automatically
+                await nodeRepo.remove(node);
+            } else if (option === "shift-children") {
+                const parentNode = node.parent;
+
+                if (!parentNode) {
+                    throw new ApiError(
+                        "Cannot shift children without a parent node",
+                        400
+                    );
+                }
+
+                // Reassign all children to the parent of the node being deleted
+                for (const child of node.children) {
+                    child.parent = parentNode; // Shift the child to the node's parent
+                    await nodeRepo.save(child); // Save the updated child
+                }
+
+                // Now safely remove the node after reassigning its children
+                await nodeRepo.remove(node);
+            }
+
+            return { message: "Node deleted successfully" };
+        } catch (error) {
+            throw new ApiError("Error deleting node", 500);
+        }
+    };
 }
 
 export default NodeService;

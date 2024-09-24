@@ -2,10 +2,9 @@ import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
-    ManyToOne,
     Tree,
-    TreeParent,
     TreeChildren,
+    TreeParent,
 } from "typeorm";
 
 @Entity("nodes")
@@ -27,9 +26,9 @@ export class Node {
     @Column({ type: "varchar", length: 7, default: "#FFFFFF" })
     color: string;
 
-    @TreeParent()
+    @TreeParent({ onDelete: "CASCADE" }) // Automatically delete children if the parent is deleted
     parent: Node;
 
-    @TreeChildren()
+    @TreeChildren({ cascade: ["remove"] }) // Use cascade for removal of children
     children: Node[];
 }

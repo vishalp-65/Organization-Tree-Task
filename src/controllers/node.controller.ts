@@ -18,3 +18,10 @@ export const getAllNode = catchAsync(async (req: Request, res: Response) => {
         data: { node },
     });
 });
+
+export const deleteNode = catchAsync(async (req: Request, res: Response) => {
+    const parentId = req.params.id;
+    const option = req.query.option || "remove-all";
+    await NodeService.deleteNode(+parentId, option as "remove-all");
+    res.status(httpStatus.NO_CONTENT).json({ status: "success" });
+});
