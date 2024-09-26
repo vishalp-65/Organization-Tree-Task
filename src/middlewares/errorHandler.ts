@@ -13,6 +13,7 @@ const errorHandler = (
         statusCode = httpStatus.INTERNAL_SERVER_ERROR;
         message = "Internal Server Error";
     }
+    console.log("Internal Server Error", err);
     res.status(statusCode).json({
         status: "error",
         statusCode,
