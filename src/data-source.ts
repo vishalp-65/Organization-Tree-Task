@@ -7,7 +7,7 @@ const AppDataSource = new DataSource({
     type: "mysql",
     url: config.DB_URI,
     synchronize: true,
-    logging: true,
+    // logging: true,
     entities: [
         process.env.NODE_ENV === "production"
             ? "dist/entities/**/*.js" // Use JS files in production
@@ -20,13 +20,5 @@ const AppDataSource = new DataSource({
     ],
     subscribers: [],
 });
-
-AppDataSource.initialize()
-    .then(() => {
-        console.log("Data Source has been initialized!");
-    })
-    .catch((error) => {
-        console.error("Error during Data Source initialization:", error);
-    });
 
 export default AppDataSource;

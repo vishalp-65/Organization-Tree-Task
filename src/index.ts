@@ -9,10 +9,11 @@ import errorHandler from "./middlewares/errorHandler";
 import apiRoutes from "./routes/index";
 import AppDataSource from "./data-source";
 
-const app = express();
-dotenv.config();
+dotenv.config(); // Load environment variables
 
-// Handle cors issue
+const app = express();
+
+// Handle CORS issue
 app.use(cors({ origin: "*" }));
 
 app.use(express.json());
@@ -21,15 +22,22 @@ app.use(express.urlencoded({ extended: true }));
 // API routes
 app.use("/api", apiRoutes);
 
-app.listen(config.PORT, () => {
-    AppDataSource; // Database connection
-    console.log(`Server running at ${config.PORT}`);
-});
-
-// send back a 404 error for any unknown api request
+// 404 handler for unknown API requests
 app.use((req, res, next) => {
     next(new ApiError("Not found", httpStatus.NOT_FOUND));
 });
 
-// Error handler
+// Error handler middleware
 app.use(errorHandler);
+
+// Initialize the database and start the server
+AppDataSource.initialize()
+    .then(() => {
+        console.log("Data Source has been initialized!");
+        app.listen(config.PORT, () => {
+            console.log(`Server running at http://localhost:${config.PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error("Error during Data Source initialization:", error);
+    });
