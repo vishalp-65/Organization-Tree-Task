@@ -53,7 +53,10 @@ export const deleteNode = catchAsync(async (req: Request, res: Response) => {
     if (!parentId) {
         throw new ApiError("parentId is required", httpStatus.BAD_REQUEST);
     }
+
     const option = req.query.option || "remove-all";
+
     await NodeService.deleteNode(+parentId, option as "remove-all");
+
     res.status(httpStatus.NO_CONTENT).json({ status: "success" });
 });
