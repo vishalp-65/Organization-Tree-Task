@@ -6,3 +6,5 @@ tmp/
 temp/
 .gitignore
 .env
+
+.vercel
