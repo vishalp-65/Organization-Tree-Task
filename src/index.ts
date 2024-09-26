@@ -41,3 +41,5 @@ AppDataSource.initialize()
     .catch((error) => {
         console.error("Error during Data Source initialization:", error);
     });
+
+export default app;
