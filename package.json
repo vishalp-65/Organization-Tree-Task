@@ -26,6 +26,7 @@
       "express": "^4.19.2",
       "express-async-handler": "^1.2.0",
       "http-status": "^1.7.4",
+      "ioredis": "^5.4.1",
       "mysql2": "^3.11.3",
       "reflect-metadata": "^0.1.13",
       "typeorm": "0.3.20",

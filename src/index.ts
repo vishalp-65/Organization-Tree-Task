@@ -12,15 +12,17 @@ import AppDataSource from "./data-source";
 const app = express();
 dotenv.config();
 
+// Handle cors issue
 app.use(cors({ origin: "*" }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// API routes
 app.use("/api", apiRoutes);
 
 app.listen(config.PORT, () => {
-    AppDataSource;
+    AppDataSource; // Database connection
     console.log(`Server running at ${config.PORT}`);
 });
 

@@ -8,11 +8,16 @@ import {
 
 const router = Router();
 
-// Node routes
+// Node creation route
 router.post("/", createNode);
+
+// Get all nodes
 router.get("/", getAllNode);
+
 // Update node
 router.put("/:id", updateNode);
+
+// Delete node route
 router.delete("/:id", deleteNode);
 
 export default router;

@@ -4,6 +4,7 @@ import AppDataSource from "../data-source";
 import { validateNodeInput } from "../validations/node.validations";
 import { assignColor } from "../utils/color";
 import httpStatus from "http-status";
+import { redis } from "../config/redis_config";
 
 class NodeService {
     // Propagate color to children
@@ -30,7 +31,6 @@ class NodeService {
             currentParent = currentParent.parent;
         }
 
-        // Default color if no location/department parent is found
         return "#FFFFFF";
     };
 
@@ -79,14 +79,26 @@ class NodeService {
             await this.propagateColor(savedNode);
         }
 
+        // Invalidate node cache on creation
+        await redis.del("all_nodes");
+
         return savedNode;
     };
 
     // Get all nodes
     public static getAllNodes = async () => {
+        const cachedNodes = await redis.get("all_nodes");
+
+        if (cachedNodes) {
+            console.log("cached");
+            return JSON.parse(cachedNodes); // Serve from cache if available
+        }
+
         const nodeRepo = AppDataSource.getTreeRepository(Node);
 
         const nodes = await nodeRepo.findTrees();
+
+        await redis.set("all_nodes", JSON.stringify(nodes), "EX", 3600);
 
         return nodes;
     };
@@ -127,13 +139,13 @@ class NodeService {
             );
         }
 
-        // Handle the "move" option: Move the node and its children to the new parent
+        //Move the node and its children to the new parent
         if (option === "move") {
-            node.parent = newParent; // Move the node and its entire subtree to the new parent
+            node.parent = newParent;
             await nodeRepo.save(node);
         }
 
-        // Handle the "shift" option: Move only the node, but shift its children up to the current node's parent
+        //  Move only the node, but shift its children up to the current node's parent
         else if (option === "shift") {
             const currentParent = node.parent;
 
@@ -154,6 +166,8 @@ class NodeService {
             node.parent = newParent;
             await nodeRepo.save(node);
         }
+
+        await redis.del("all_nodes"); // Invalidate cache after update
 
         return node;
     };
@@ -189,13 +203,16 @@ class NodeService {
 
             // Reassign all children to the parent of the node being deleted
             for (const child of node.children) {
-                child.parent = parentNode; // Shift the child to the node's parent
-                await nodeRepo.save(child); // Save the updated child
+                child.parent = parentNode;
+                await nodeRepo.save(child);
             }
 
             // Now safely remove the node after reassigning its children
             await nodeRepo.remove(node);
         }
+
+        // Invalidate cache after deletion
+        await redis.del("all_nodes");
 
         return { message: "Node deleted successfully" };
     };
