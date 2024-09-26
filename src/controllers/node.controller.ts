@@ -20,6 +20,16 @@ export const getAllNode = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+export const updateNodeValue = catchAsync(
+    async (req: Request, res: Response) => {
+        const node = await NodeService.updateNodeValue(req.body);
+        res.status(httpStatus.OK).json({
+            status: "success",
+            data: { node },
+        });
+    }
+);
+
 // Update Node
 export const updateNode = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {

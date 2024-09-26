@@ -8,16 +8,8 @@ const AppDataSource = new DataSource({
     url: config.DB_URI,
     synchronize: true,
     // logging: true,
-    entities: [
-        process.env.NODE_ENV === "production"
-            ? "dist/entities/**/*.js" // Use JS files in production
-            : "src/entities/**/*.ts", // Use TS files in development
-    ],
-    migrations: [
-        process.env.NODE_ENV === "production"
-            ? "dist/migrations/**/*.js" // Use JS files in production
-            : "src/migrations/**/*.ts", // Use TS files in development
-    ],
+    entities: ["src/entities/**/*.ts"],
+    migrations: ["src/migrations/**/*.ts"],
     subscribers: [],
 });
 

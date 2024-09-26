@@ -35,7 +35,7 @@ AppDataSource.initialize()
     .then(() => {
         console.log("Data Source has been initialized!");
         app.listen(config.PORT, () => {
-            console.log(`Server running at http://localhost:${config.PORT}`);
+            console.log(`Server running at ${config.PORT}`);
         });
     })
     .catch((error) => {

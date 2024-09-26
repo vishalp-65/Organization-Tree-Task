@@ -4,12 +4,16 @@ import {
     getAllNode,
     deleteNode,
     updateNode,
+    updateNodeValue,
 } from "../../controllers/node.controller";
 
 const router = Router();
 
 // Node creation route
 router.post("/", createNode);
+
+// Node value update route
+router.post("/update", updateNodeValue);
 
 // Get all nodes
 router.get("/", getAllNode);
